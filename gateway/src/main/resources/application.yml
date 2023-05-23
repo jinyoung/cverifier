@@ -1,0 +1,82 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+      routes:
+        - id: UserPortal
+          uri: http://localhost:8082
+          predicates:
+            - Path=/documents/**, 
+        - id: DocumentParser
+          uri: http://localhost:8083
+          predicates:
+            - Path=/textData/**, 
+        - id: VerificationAnalyzer
+          uri: http://localhost:8085
+          predicates:
+            - Path=/verificationResults/**, 
+        - id: TenantBilling
+          uri: http://localhost:8088
+          predicates:
+            - Path=/tenants/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: UserPortal
+          uri: http://userPortal:8080
+          predicates:
+            - Path=/documents/**, 
+        - id: DocumentParser
+          uri: http://documentParser:8080
+          predicates:
+            - Path=/textData/**, 
+        - id: VerificationAnalyzer
+          uri: http://verificationAnalyzer:8080
+          predicates:
+            - Path=/verificationResults/**, 
+        - id: TenantBilling
+          uri: http://tenantBilling:8080
+          predicates:
+            - Path=/tenants/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
